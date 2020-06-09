@@ -1,73 +1,47 @@
-# All the external objects that the current submodule depends on
-# Those objects have to be up to date
-tempo1 = $(wildcard ../SM-Buffered_arrays/obj/*.o)
-tempo2 = $(wildcard ../SM-Scoped_timer/obj/*.o)
-tempo3 = $(wildcard ../SM-Omp_extra/obj/*.o)
-EXTERNAL_OBJ = $(tempo1) $(tempo2) $(tempo3)
+NAME = Omp_extra
+TARGET_STATIC = lib$(NAME).a
 
-TARGET_NAME = Omp_extra
-TARGET_STATIC = $(TARGET_NAME).a
-# PYLIB_EXT = $(if $(filter $(OS),Windows_NT),.pyd,.so)
-# TARGET_PYLIB = ../Python/$(TARGET_NAME)$(PYLIB_EXT)
-
-# standard subdirectories
 IDIR = includes
 ODIR = obj
 LDIR = lib
 SDIR = src
 
-# Lits of .c and corresponding .o and .h
 SRC  = $(wildcard $(SDIR)/*.cpp)
 OBJ  = $(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o,$(SRC))
 DEPS = $(OBJ:.o=.d)
-# HEAD = $(patsubst $(SDIR)/%.cpp,$(IDIR)/%.h,$(SRC))
 
-# Toolchain, using mingw on windows
-CC = $(OS:Windows_NT=x86_64-w64-mingw32-)g++
+CXX = $(OS:Windows_NT=x86_64-w64-mingw32-)g++
+OPTIMIZATION = -Ofast -march=native
+CPP_STD = -std=c++14
+WARNINGS = -Wall
+MINGW_COMPATIBLE = $(OS:Windows_NT=-DMS_WIN64 -D_hypot=hypot)
+DEPS_FLAG = -MMD -MP
 
-# flags
-CFLAGS = -Ofast -march=native -std=c++14 -MMD -MP -Wall $(OS:Windows_NT=-DMS_WIN64 -D_hypot=hypot)
-OMPFLAGS = -fopenmp -fopenmp-simd
-FFTWFLAGS = -lfftw3
-MATHFLAGS = -lm
-SHRFLAGS = -fPIC -shared
+POSITION_INDEP = -fPIC
 
-# Python directories
-PY = $(OS:Windows_NT=/c/Anaconda2/)python
-ifeq ($(USERNAME),simon)
-    PY = $(OS:Windows_NT=/cygdrive/c/Anaconda2/)python
-endif
-ifeq ($(USERNAME),Sous-sol)
-    PY = $(OS:Windows_NT=/cygdrive/c/ProgramData/Anaconda2/)python
-endif
+OMP = -fopenmp -fopenmp-simd
 
-# includes
-PYINCL := $(shell $(PY) -m pybind11 --includes)
-ifneq ($(OS),Windows_NT)
-    PYINCL += -I /usr/include/python2.7/
-endif
+STATIC_LIB = ar cr $(TARGET_STATIC) $(OBJ) 
 
-# libraries
-PYLIBS = $(OS:Windows_NT=-L /c/Anaconda2/libs/ -l python27) $(PYINCL)
-ifeq ($(USERNAME),simon)
-    PYLIBS = $(OS:Windows_NT=-L /cygdrive/c/Anaconda2/libs/ -l python27) $(PYINCL)
-endif
-ifeq ($(USERNAME),Sous-sol)
-    PYLIBS = $(OS:Windows_NT=-L /cygdrive/c/ProgramData/Anaconda2/libs/ -l python27) $(PYINCL) 
-endif
+COMPILE = $(CXX) $(CPP_STD) $(OPTIMIZATION) $(POSITION_INDEP) $(WARNINGS) -c -o $@ $< $(OMP) $(DEPS_FLAG) $(MINGW_COMPATIBLE)
 
-$(TARGET_STATIC): $(OBJ)
+all : $(TARGET_STATIC)
+
+$(TARGET_STATIC) : $(OBJ)
 	@ echo " "
-	@ echo "---------No .pyd generated ---------"
+	@ echo "---------Compiling static library $@ ---------"
+	$(STATIC_LIB)
 	
 $(ODIR)/%.o : $(SDIR)/%.cpp
 	@ echo " "
 	@ echo "---------Compile object $@ from $<--------"
-	$(CC) $(SHRFLAGS) -c -Wall -o $@ $< $(CFLAGS) $(FFTWFLAGS) $(MATHFLAGS) $(OMPFLAGS) $(PYLIBS) 
+	$(COMPILE)
+
+$(OBJ) : makefile
 
 -include $(DEPS)
 
 clean:
-	@rm -f $(TARGET_STATIC) $(OBJ)
+	@rm -f $(TARGET_STATIC) $(OBJ) $(DEPS)
 	 	 
-.PHONY: clean, dummy
+.PHONY: all , clean
