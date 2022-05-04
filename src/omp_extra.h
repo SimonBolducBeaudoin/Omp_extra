@@ -10,6 +10,7 @@
     #include <processthreadsapi.h>
 #endif
 
+#include <stdio.h>
 #include <omp.h>
 #include<thread>
 #include <assert.h>

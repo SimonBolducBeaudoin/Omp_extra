@@ -1,4 +1,4 @@
-#include "../includes/omp_extra.h"
+#include "omp_extra.h"
 // Windows doesn't really like systems with over 64 logical cores.
 // This function assign the thread it's called from to a core, bypassing the 
 // default assignation. It alternates between CPU Groups to assign a thread to
