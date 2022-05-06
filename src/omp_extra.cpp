@@ -27,11 +27,11 @@ void manage_thread_affinity()
         
         result = SetThreadGroupAffinity(thandle, &group, NULL); // Actually setting the affinity
         if(!result) fprintf(stderr, "Failed setting output for tid=%i\n", tid);
-		//// SBB 2/3/2020
+
 		free(threads_per_groups);
 		////
     #else
-        //We let openmp and the OS manage the threads themselves
+        ;//We let openmp and the OS manage the threads themselves
     #endif
 }
 
