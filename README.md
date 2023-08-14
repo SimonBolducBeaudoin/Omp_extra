@@ -10,8 +10,8 @@ Adding some features to open_mp and wraping some functionnalities to python.
     This means that the library must eather be installed in your environnment's path or that it must be included during compilation and linking. 
     You can edit the "CmakeList.txt" to properly include homebrewed libraries.
     - Homebrewed libraries (available on my github : https://github.com/SimonBolducBeaudoin)
-        - None...
-    - Other dependencies
+        - AutiGitVersion (CMake) (expected to be in a  neighboring folder)
+    - C/C++ dependencies
         - openmp
             - Can be installed using your package manager.
         - pybind11

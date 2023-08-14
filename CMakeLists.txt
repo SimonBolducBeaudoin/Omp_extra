@@ -8,10 +8,14 @@ set(EXTERNAL_INCLUDES ./src)
 set(COMPILE_OPTIONS_ADD -fopenmp -fopenmp-simd )  
 set(LINKS -fopenmp -fopenmp-simd)
 
-include(fancy_version_number_2.cmake) #sets CODE_VERSION 
-
 cmake_minimum_required(VERSION 3.15)
-project(${PROJECT_NAME} VERSION ${CODE_VERSION}) # Needs to be ontop
+project(${PROJECT_NAME} ) # Needs to be ontop
+
+# AUTOGIT STUFF #########
+include(../AutoGitVersion/AutoGitVersion.cmake) # Defined cmake functions : AutoGitVersion and others
+AutoGitVersion()                 # Sets up a target git_version.cpp that constains  kGitHash and GitTag as const
+set(DEPENDS_ON_GIT_VERSION git_version)
+#########################
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
@@ -34,7 +38,7 @@ file(GLOB SRC_FILES_PY "src/*_py.cpp")
 file(GLOB SRC_FILES "src/*.cpp")
 set(SRC_STATIC ${SRC_FILES})
 list(FILTER SRC_STATIC EXCLUDE REGEX ".*_py\\.cpp$")
-list(FILTER SRC_STATIC EXCLUDE REGEX ".python_submodul.cpp\\.cpp$")
+list(FILTER SRC_STATIC EXCLUDE REGEX ".*python_submodule\\.cpp$")
 
 add_compile_options(-Wall -O3 -march=native )
 add_compile_options(${COMPILE_OPTIONS_ADD})
@@ -51,8 +55,7 @@ include_directories(${EXTERNAL_INCLUDES})
 #linking 
 set_target_properties(${LIB_NAME}_py PROPERTIES PREFIX "${SHARED_LIB_PREFIX}")
 set_target_properties(${LIB_NAME}_py PROPERTIES SUFFIX ${SHARED_LIB_SUFFIX})
-target_link_libraries(${LIB_NAME}_py ${LINKS})
+target_link_libraries(${LIB_NAME}_py ${DEPENDS_ON_GIT_VERSION} ${LINKS})
 set_target_properties(${LIB_NAME} PROPERTIES PREFIX "${SHARED_LIB_PREFIX}")
 target_link_libraries(${LIB_NAME} ${LINKS})
-
 
