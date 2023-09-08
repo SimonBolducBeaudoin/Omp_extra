@@ -8,6 +8,9 @@
 //Python Binding and Time_Quad class instances.
 PYBIND11_MODULE(omp_extra, m)
 {
-    m.doc() = "Git tag : " + std::string(kGitTag) +"\n"+"Git hash : " + std::string(kGitHash) +"\n"+ "Some OpenMP functions to modify environnement variables";
+    m.doc() = "Some OpenMP functions to modify environnement variables\n"\
+    "Git Info : \n "\
+    + std::string(kGitInfo)\
+    +"\n";
 	init_omp_extra(m);
 }
