@@ -5,6 +5,7 @@
 set(PROJECT_NAME Omp_extra)                    
 set(LIB_NAME omp_extra)                        
 set(EXTERNAL_INCLUDES ./src) 
+separate_arguments(EXTERNAL_INCLUDES)           # Turned into a list a list 
 set(COMPILE_OPTIONS_ADD -fopenmp -fopenmp-simd )  
 set(LINKS -fopenmp -fopenmp-simd)
 
