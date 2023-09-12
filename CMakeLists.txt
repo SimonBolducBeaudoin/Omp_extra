@@ -4,13 +4,18 @@
 
 set(PROJECT_NAME Omp_extra)                    
 set(LIB_NAME omp_extra)                        
-set(EXTERNAL_INCLUDES ./src) 
-separate_arguments(EXTERNAL_INCLUDES)           # Turned into a list a list 
+#set(EXTERNAL_INCLUDES) 
+#set(STATIC_LINKS ) 
 set(COMPILE_OPTIONS_ADD -fopenmp -fopenmp-simd )  
 set(LINKS -fopenmp -fopenmp-simd)
 
 cmake_minimum_required(VERSION 3.15)
 project(${PROJECT_NAME} ) # Needs to be ontop
+
+# Prepending the absolute path
+list(TRANSFORM EXTERNAL_INCLUDES PREPEND "${PROJECT_SOURCE_DIR}/../" REGEX "^(.*)$" )
+list(TRANSFORM STATIC_LINKS PREPEND "${PROJECT_SOURCE_DIR}/../" REGEX "^(.*)$" )
+list(APPEND LINKS ${STATIC_LINKS})
 
 # AUTOGIT STUFF #########
 include(../AutoGitVersion/AutoGitVersion.cmake) # Defined cmake functions : AutoGitVersion and others
@@ -44,7 +49,7 @@ list(FILTER SRC_STATIC EXCLUDE REGEX ".*python_submodule\\.cpp$")
 add_compile_options(-Wall -O3 -march=native )
 add_compile_options(${COMPILE_OPTIONS_ADD})
 
-add_library(${LIB_NAME}_py ${SRC_FILES})        #shared library (i.e. the python library)
+add_library(${LIB_NAME}_py ${SRC_FILES_PY})        #shared library (i.e. the python library)
 set_target_properties(${LIB_NAME}_py PROPERTIES OUTPUT_NAME ${LIB_NAME})        #shared library (i.e. the python library)
 add_library(${LIB_NAME} STATIC ${SRC_STATIC}) #static library (i.e. to import in other c++ projects)
 include(config.cmake) # sets IS_MINGW,PY_INCL,SHARED_LIB_PREFIX,SHARED_LIB_SUFFIX and updates LINKS
