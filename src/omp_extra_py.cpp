@@ -1,4 +1,4 @@
-#include <omp_extra_py.h>
+#include "omp_extra_py.h"
 
 // See : https://www.openmp.org/spec-html/5.0/openmpsu32.html#x51-710002.5.3
 
