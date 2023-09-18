@@ -1,5 +1,4 @@
 #include "python_submodule.h"
-#include "git_version.h"
 #include <string>
 
 // See Pybind11 FAQ «How can I reduce the build time ?» :
