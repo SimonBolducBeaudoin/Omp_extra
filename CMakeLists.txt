@@ -59,3 +59,5 @@ target_link_libraries(${LIB_NAME}_py ${GIT_VERSION_TARGET} ${LINKS})
 set_target_properties(${LIB_NAME} PROPERTIES PREFIX "${SHARED_LIB_PREFIX}")
 target_link_libraries(${LIB_NAME} ${LINKS})
 
+message(STATUS "Installing Omp_extra")
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/obj/ DESTINATION ${PROJECT_SOURCE_DIR}/ FILES_MATCHING PATTERN "*.pyd" PATTERN "*.so")
