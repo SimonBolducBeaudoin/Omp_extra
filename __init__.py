@@ -1,3 +1,5 @@
+#!/bin/env/python
+#! -*- coding: utf-8 -*-
 """
     A module that makes omp function call available in python
 """
