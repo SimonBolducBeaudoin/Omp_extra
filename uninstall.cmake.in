@@ -1,0 +1,2 @@
+file(REMOVE @INSTALL_DIR@/omp_extra.pyd)
+file(REMOVE @INSTALL_DIR@/omp_extra.so)
