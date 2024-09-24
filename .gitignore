@@ -36,3 +36,4 @@
 #Folders
 build
 __pycache__/
+*.bak
