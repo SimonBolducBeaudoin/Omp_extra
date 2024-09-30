@@ -4,9 +4,9 @@
 
 set(PROJECT_NAME Omp_extra)                    
 set(LIB_NAME omp_extra)                        
-#set(EXTERNAL_INCLUDES) 
+set(EXTERNAL_INCLUDES ) 
 #set(STATIC_LINKS ) 
-set(COMPILE_OPTIONS_ADD -fopenmp -fopenmp-simd )  
+set(COMPILE_OPTIONS_ADD -fopenmp -fopenmp-simd)  
 set(LINKS -fopenmp -fopenmp-simd)
 
 cmake_minimum_required(VERSION 3.15)
@@ -43,7 +43,7 @@ list(FILTER SRC_STATIC EXCLUDE REGEX ".*python_submodule\\.cpp$")
 add_compile_options(-Wall -O3 -march=native )
 add_compile_options(${COMPILE_OPTIONS_ADD})
 
-add_library(${LIB_NAME}_py ${SRC_FILES_PY})        #shared library (i.e. the python library)
+add_library(${LIB_NAME}_py ${SRC_FILES})        #shared library (i.e. the python library)
 set_target_properties(${LIB_NAME}_py PROPERTIES OUTPUT_NAME ${LIB_NAME})        #shared library (i.e. the python library)
 add_library(${LIB_NAME} STATIC ${SRC_STATIC}) #static library (i.e. to import in other c++ projects)
 include(CMakeConfigs/pybind11.cmake) # sets IS_MINGW,PY_INCL,SHARED_LIB_PREFIX,SHARED_LIB_SUFFIX and updates LINKS
@@ -55,11 +55,10 @@ include_directories(${EXTERNAL_INCLUDES})
 #linking 
 set_target_properties(${LIB_NAME}_py PROPERTIES PREFIX "${SHARED_LIB_PREFIX}")
 set_target_properties(${LIB_NAME}_py PROPERTIES SUFFIX ${SHARED_LIB_SUFFIX})
-target_link_libraries(${LIB_NAME}_py ${GIT_VERSION_TARGET} ${LINKS})
+target_link_libraries(${LIB_NAME}_py ${LINKS})
 set_target_properties(${LIB_NAME} PROPERTIES PREFIX "${SHARED_LIB_PREFIX}")
 target_link_libraries(${LIB_NAME} ${LINKS})
 
-message(STATUS "Installing Omp_extra")
 set(DIR ${PROJECT_SOURCE_DIR}/obj/) 
 set(INSTALL_DIR ${PROJECT_SOURCE_DIR}) 
 install(TARGETS ${LIB_NAME}_py DESTINATION ${INSTALL_DIR} )
